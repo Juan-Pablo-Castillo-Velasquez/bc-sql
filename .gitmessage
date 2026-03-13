@@ -1,0 +1,85 @@
+# type(scope): subject ← max 72 chars, imperative mood, no period
+
+#
+
+# Types:
+
+# feat → new content or feature
+
+# fix → corrects an error or broken content
+
+# docs → documentation / README changes only
+
+# style → formatting, whitespace, no logic change
+
+# refactor → restructure without adding/fixing
+
+# test → add or update SQL test scripts
+
+# chore → build, .gitignore, config, tooling
+
+# ci → CI/CD workflow changes
+
+# perf → performance improvements
+
+# revert → revert a previous commit
+
+#
+
+# Scopes (examples):
+
+# week-01 week-07 week-24
+
+# teoria practicas proyecto assets
+
+# glosario recursos rubrica
+
+# scripts docs config
+
+#
+
+# ─────────────────────────────────────────────────────
+
+# What? — What was changed? (be specific)
+
+#
+
+# For? — Why? What's the motivation / context?
+
+#
+
+# Impact? — Side effects, breaking changes, dependencies, notes?
+
+#
+
+# ─────────────────────────────────────────────────────
+
+# Examples:
+
+#
+
+# feat(week-01): add intro theory on relational databases
+
+#
+
+# What? Add 01-intro-relational-db.md with ER concepts
+
+# For? Students need foundation before writing SQL
+
+# Impact? None — new file, no breaking changes
+
+#
+
+# ─────
+
+#
+
+# fix(week-03): correct typo in LEFT JOIN exercise step 2
+
+#
+
+# What? Fix wrong column alias in starter/ejercicio.sql
+
+# For? Alias mismatch caused confusion for students
+
+# Impact? Minimal — only affects starter file
