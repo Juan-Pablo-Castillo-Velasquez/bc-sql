@@ -1,0 +1,129 @@
+# ============================================
+# .gitignore — Bootcamp SQL de Cero a Héroe
+# ============================================
+
+# ============================================
+# BASES DE DATOS SQLITE
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+*.db-journal
+
+# ============================================
+# POSTGRES — ARCHIVOS LOCALES
+# ============================================
+*.pgdump
+*.pg_dump
+*.backup
+pgdata/
+
+# ============================================
+# EXPORTACIONES Y SALIDAS
+# ============================================
+*.pdf
+_export/
+_output/
+dist/
+
+# ============================================
+# SISTEMA OPERATIVO
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.Trash-*
+
+# ============================================
+# EDITORES
+# ============================================
+
+# VS Code — solo ignorar configuración personal,
+# conservar extensions.json y settings compartidas
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# JetBrains (DataGrip, etc.)
+.idea/
+*.iml
+
+# Vim / Neovim
+*.swp
+*.swo
+*.swn
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+
+# Emacs
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+
+# ============================================
+# SCRIPTS Y HERRAMIENTAS
+# ============================================
+
+# Python (si se usan scripts de automatización)
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Node.js (si se usan herramientas de build/linting)
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+package-lock.json
+
+# ============================================
+# ARCHIVOS TEMPORALES Y LOGS
+# ============================================
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+
+# ============================================
+# SECRETOS Y CONFIGURACIÓN LOCAL
+# ============================================
+.env
+.env.local
+.env.*.local
+*.secret
+secrets.yml
+credentials.json
+
+# Archivos de conexión a BD con credenciales reales
+.pgpass
+*.dsn
+
+# ============================================
+# TRABAJO EN PROGRESO DEL APRENDIZ
+# ============================================
+# Las entregas de aprendices van en sus propios forks.
+# Si alguien trabaja en una copia local sin fork:
+homework/
+entregables/
+mi-dominio/
