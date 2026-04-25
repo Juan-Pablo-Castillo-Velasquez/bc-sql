@@ -199,7 +199,7 @@ AVAILABLE_DOMAINS = [(d[0], d[1], d[2]) for d in DOMAINS if not d[3]]
 def load_apprentices(filepath: str) -> list[dict]:
     """Carga la lista de aprendices desde un CSV."""
     apprentices = []
-    with open(filepath, newline="", encoding="utf-8") as f:
+    with open(filepath, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         for row in reader:
             apprentices.append({
@@ -255,9 +255,27 @@ def save_pdf(rows: list[dict], filepath: str, trimestre: str | None = None) -> N
         from reportlab.lib import colors
         from reportlab.lib.units import cm
         from reportlab.platypus import (
-            SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+            SimpleDocTemplate, Table, TableStyle, Paragraph as _Paragraph, Spacer
         )
         from reportlab.lib.styles import ParagraphStyle
+        from reportlab.pdfbase import pdfmetrics
+        from reportlab.pdfbase.ttfonts import TTFont
+        import os as _os
+
+        # Registrar fuente con soporte UTF-8 completo (tildes, Ñ, etc.)
+        _font_candidates = [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+            "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
+        ]
+        _font_name = "Helvetica"
+        _font_name_bold = "Helvetica-Bold"
+        for _fc in _font_candidates:
+            if _os.path.exists(_fc):
+                pdfmetrics.registerFont(TTFont("UTF8Sans", _fc))
+                _font_name = "UTF8Sans"
+                _font_name_bold = "UTF8Sans"
+                break
     except ImportError:
         print(
             "Error: se requiere reportlab para generar PDF.\n"
@@ -265,6 +283,11 @@ def save_pdf(rows: list[dict], filepath: str, trimestre: str | None = None) -> N
             file=sys.stderr,
         )
         sys.exit(1)
+
+    from xml.sax.saxutils import escape as _escape
+
+    def _p(text: str, style):
+        return _Paragraph(_escape(str(text)), style)
 
     C_DARK = colors.HexColor("#1a1a2e")
     C_BLUE = colors.HexColor("#336791")
@@ -276,23 +299,23 @@ def save_pdf(rows: list[dict], filepath: str, trimestre: str | None = None) -> N
     C_META  = colors.HexColor("#adb5bd")
 
     cell_style = ParagraphStyle(
-        "cell", fontName="Helvetica", fontSize=8, textColor=C_TEXT, leading=11
+        "cell", fontName=_font_name, fontSize=8, textColor=C_TEXT, leading=11
     )
     hdr_style = ParagraphStyle(
-        "hdr", fontName="Helvetica-Bold", fontSize=8, textColor=C_WHITE, leading=11
+        "hdr", fontName=_font_name_bold, fontSize=8, textColor=C_WHITE, leading=11
     )
 
     # ── Tabla de asignaciones ─────────────────────────────────────────────
     col_labels = ["#", "Nombre", "Ficha", "Bootcamp", "Dominio asignado", "Entidades principales"]
-    table_data = [[Paragraph(h, hdr_style) for h in col_labels]]
+    table_data = [[_p(h, hdr_style) for h in col_labels]]
     for i, r in enumerate(rows, 1):
         table_data.append([
-            Paragraph(str(i),         cell_style),
-            Paragraph(r["nombre"],    cell_style),
-            Paragraph(r["ficha"],     cell_style),
-            Paragraph(r["bootcamp"],  cell_style),
-            Paragraph(r["dominio"],   cell_style),
-            Paragraph(r["entidades"], cell_style),
+            _p(str(i),         cell_style),
+            _p(r["nombre"],    cell_style),
+            _p(r["ficha"],     cell_style),
+            _p(r["bootcamp"],  cell_style),
+            _p(r["dominio"],   cell_style),
+            _p(r["entidades"], cell_style),
         ])
 
     # Landscape A4: 29.7 cm − 2 × 1.5 cm márgenes = 26.7 cm útiles
@@ -317,16 +340,16 @@ def save_pdf(rows: list[dict], filepath: str, trimestre: str | None = None) -> N
     trimestre_label = f"Trimestre: {trimestre}  \u00b7  " if trimestre else ""
 
     title_style = ParagraphStyle(
-        "title", fontName="Helvetica-Bold", fontSize=15, textColor=C_WHITE, leading=18
+        "title", fontName=_font_name_bold, fontSize=15, textColor=C_WHITE, leading=18
     )
     meta_style = ParagraphStyle(
-        "meta", fontName="Helvetica", fontSize=9, textColor=C_META, leading=12
+        "meta", fontName=_font_name, fontSize=9, textColor=C_META, leading=12
     )
 
     banner = Table(
         [[
-            Paragraph("Asignaciones de Dominios \u2014 Bootcamp SQL", title_style),
-            Paragraph(
+            _p("Asignaciones de Dominios \u2014 Bootcamp SQL", title_style),
+            _p(
                 f"{trimestre_label}Generado: {date_str}  \u00b7  {len(rows)} aprendices",
                 meta_style,
             ),
