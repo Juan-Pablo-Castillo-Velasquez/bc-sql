@@ -31,7 +31,7 @@
 --     SUM(salary)            AS masa_salarial
 -- FROM   employees
 -- GROUP BY department_id;
-
+-- editar aqui
 
 -- ============================================
 -- PASO 3: HAVING — filtrar grupos

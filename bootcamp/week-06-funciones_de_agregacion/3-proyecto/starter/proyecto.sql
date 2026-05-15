@@ -25,7 +25,7 @@
 --     MIN(col_num) AS minimo,
 --     MAX(col_num) AS maximo
 -- FROM tu_tabla;
-
+-- editar aqui
 
 -- ============================================
 -- REPORTE 3: Subtotales por categoría (GROUP BY)

@@ -22,3 +22,4 @@ FROM employees;
 SELECT AVG(salary) AS promedio_engineering
 FROM   employees
 WHERE  department_id = 1;
+-- editar aqui

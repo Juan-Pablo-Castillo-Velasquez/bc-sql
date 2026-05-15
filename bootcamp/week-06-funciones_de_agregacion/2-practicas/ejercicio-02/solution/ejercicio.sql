@@ -24,7 +24,7 @@ SELECT department_id, COUNT(*) AS total
 FROM   employees
 GROUP BY department_id
 HAVING COUNT(*) > 1;
-
+-- editar aqui
 -- PASO 4
 SELECT
     department_id,

@@ -21,7 +21,7 @@
 --     AVG(salary) AS salario_promedio
 -- FROM employees;
 
-
+-- editar aqui
 -- ============================================
 -- PASO 3: MIN y MAX
 -- ============================================
