@@ -1,43 +1,47 @@
 -- ============================================
 -- Semana 06: Agregación — Ejercicio 01
 -- COUNT, SUM, AVG, MIN, MAX
+-- Dominio: Heladería
 -- ============================================
 -- Ejecuta primero: setup.sql
 
 -- ============================================
--- PASO 1: COUNT — total de empleados
+-- PASO 1: COUNT — total de ventas
 -- ============================================
+-- ¿Cuántas ventas registramos en total?
 
--- SELECT COUNT(*) AS total_empleados
--- FROM   employees;
+SELECT COUNT(*) AS total_ventas
+FROM   sales;
 
 
 -- ============================================
--- PASO 2: SUM y AVG del salario
+-- PASO 2: SUM y AVG del monto de ventas
 -- ============================================
+-- ¿Cuánto dinero en total y promedio por venta?
 
--- SELECT
---     SUM(salary) AS masa_salarial,
---     AVG(salary) AS salario_promedio
--- FROM employees;
+SELECT
+    SUM(subtotal) AS ingresos_totales,
+    AVG(subtotal) AS ingreso_promedio_linea
+FROM sales_details;
 
--- editar aqui
+
 -- ============================================
--- PASO 3: MIN y MAX
+-- PASO 3: MIN y MAX de precios de productos
 -- ============================================
+-- ¿Cuál es el producto más caro y más barato?
 
--- SELECT
---     MIN(salary) AS salario_minimo,
---     MAX(salary) AS salario_maximo
--- FROM employees;
+SELECT
+    MIN(price) AS producto_mas_barato,
+    MAX(price) AS producto_mas_caro
+FROM products;
 
 
 -- ============================================
 -- PASO 4: Agregación con WHERE
 -- ============================================
+-- ¿Cuánto vendimos en la sucursal Centro (branch_id = 1)?
 
--- Calcula el promedio salarial del departamento 1 (Engineering):
-
--- SELECT AVG(salary) AS promedio_engineering
--- FROM   employees
--- WHERE  department_id = 1;
+SELECT SUM(subtotal) AS ingresos_sucursal_centro
+FROM   sales_details sd
+JOIN   sales s ON sd.sale_id = s.id
+WHERE  s.branch_id = 1;
