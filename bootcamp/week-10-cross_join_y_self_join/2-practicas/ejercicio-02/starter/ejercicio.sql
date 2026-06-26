@@ -1,66 +1,46 @@
--- Semana 10: SELF JOIN
--- Ejercicio 02 — Descomenta cada bloque en orden
-
 -- ============================================
+-- Semana 10: SELF JOIN — Heladería
+-- Ejercicio 02 — SOLUCIÓN (Juan Pablo Castillo)
+-- ============================================
+
 -- PASO 1: SELF JOIN básico (INNER JOIN)
--- ============================================
-
--- Empleados con el nombre de su jefe directo
--- El CEO queda excluido (manager_id = NULL)
--- Descomenta las siguientes líneas:
-
--- SELECT
---     e.first_name  AS employee,
---     m.first_name  AS manager
--- FROM employees e
--- INNER JOIN employees m ON e.manager_id = m.id;
+-- Sabores derivados junto con el nombre de su sabor base principal
+SELECT
+    f.name  AS sabor_derivado,
+    b.name  AS sabor_base_principal
+FROM flavors f
+INNER JOIN flavors b ON f.parent_flavor_id = b.id;
 
 
--- ============================================
--- PASO 2: Incluir al CEO con LEFT JOIN + COALESCE
--- ============================================
-
--- COALESCE muestra 'CEO' cuando manager es NULL
--- Descomenta las siguientes líneas:
-
--- SELECT
---     e.first_name                   AS employee,
---     COALESCE(m.first_name, 'CEO')  AS manager
--- FROM employees  e
--- LEFT JOIN employees m ON e.manager_id = m.id
--- ORDER BY manager, employee;
+-- PASO 2: Incluir sabores principales con LEFT JOIN + COALESCE
+-- Listar todos los sabores; si no dependen de ninguno, marcar como 'Sabor Raíz'
+SELECT
+    f.name                                AS sabor,
+    COALESCE(b.name, 'Sabor Principal')  AS categoria_padre
+FROM flavors f
+LEFT JOIN flavors b ON f.parent_flavor_id = b.id
+ORDER BY categoria_padre, sabor;
 
 
--- ============================================
--- PASO 3: Contar reportes directos por manager
--- ============================================
-
--- Cuántos empleados reportan a cada persona
--- Descomenta las siguientes líneas:
-
--- SELECT
---     m.first_name    AS manager,
---     COUNT(e.id)     AS direct_reports
--- FROM employees  m
--- LEFT JOIN employees e ON e.manager_id = m.id
--- GROUP BY m.id, m.first_name
--- HAVING COUNT(e.id) > 0
--- ORDER BY direct_reports DESC;
+-- PASO 3: Contar variaciones directas por sabor base
+-- Muestra cuántos sabores derivados se crearon a partir de cada sabor base
+SELECT
+    b.name        AS sabor_base,
+    COUNT(f.id)   AS total_variaciones
+FROM flavors b
+LEFT JOIN flavors f ON f.parent_flavor_id = b.id
+GROUP BY b.id, b.name
+HAVING COUNT(f.id) > 0
+ORDER BY total_variaciones DESC;
 
 
--- ============================================
 -- PASO 4: Jerarquía de dos niveles
--- ============================================
-
--- Empleado → su jefe → el jefe del jefe
--- Usa tres aliases: e, m, gm (grand manager)
--- Descomenta las siguientes líneas:
-
--- SELECT
---     e.first_name   AS employee,
---     m.first_name   AS manager,
---     gm.first_name  AS grand_manager
--- FROM employees e
--- LEFT JOIN employees m  ON e.manager_id = m.id
--- LEFT JOIN employees gm ON m.manager_id = gm.id
--- ORDER BY gm.first_name, m.first_name, e.first_name;
+-- Encontrar la cadena completa: Sabor nieto -> Sabor hijo -> Sabor abuelo (Base)
+SELECT
+    f.name   AS sabor_especial,
+    m.name   AS sabor_base_directo,
+    gm.name  AS sabor_raiz_original
+FROM flavors f
+LEFT JOIN flavors m  ON f.parent_flavor_id = m.id
+LEFT JOIN flavors gm ON m.parent_flavor_id = gm.id
+ORDER BY gm.name, m.name, f.name;

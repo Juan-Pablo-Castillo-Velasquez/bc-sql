@@ -1,61 +1,48 @@
--- Semana 10: CROSS JOIN
--- Ejercicio 01 — Descomenta cada bloque en orden
-
 -- ============================================
+-- Semana 10: CROSS JOIN — Heladería
+-- Ejercicio 01 — SOLUCIÓN (Juan Pablo Castillo)
+-- ============================================
+
 -- PASO 1: CROSS JOIN básico
--- ============================================
-
--- Todas las combinaciones de departamento × nivel
--- Sin cláusula ON — no hay condición de unión
--- Descomenta las siguientes líneas:
-
--- SELECT
---     d.name  AS department,
---     l.name  AS level
--- FROM departments d
--- CROSS JOIN job_levels l
--- ORDER BY d.name, l.rank;
+-- Generar la matriz completa de todas las sucursales con todos los sabores existentes
+SELECT
+    b.name  AS sucursal,
+    f.name  AS sabor
+FROM branches b
+CROSS JOIN flavors f
+ORDER BY b.name, f.name;
 
 
 -- ============================================
 -- PASO 2: Verificar el total de combinaciones
 -- ============================================
-
--- Contar el producto cartesiano: debe ser 4 × 3 = 12
--- Descomenta las siguientes líneas:
-
--- SELECT COUNT(*) AS total_combinations
--- FROM departments d
--- CROSS JOIN job_levels l;
+-- Cuenta cuántas filas totales genera el producto cartesiano (filas de branches * filas de flavors)
+SELECT COUNT(*) AS total_combinaciones
+FROM branches b
+CROSS JOIN flavors f;
 
 
 -- ============================================
 -- PASO 3: Filtrar con WHERE
 -- ============================================
-
--- Solo combinaciones de Engineering (3 filas)
--- Descomenta las siguientes líneas:
-
--- SELECT
---     d.name  AS department,
---     l.name  AS level
--- FROM departments  d
--- CROSS JOIN job_levels l
--- WHERE d.name = 'Engineering'
--- ORDER BY l.rank;
+-- Mostrar la grilla de sabores disponibles mapeados únicamente para la sucursal 'Centro'
+SELECT
+    b.name  AS sucursal,
+    f.name  AS sabor
+FROM branches b
+CROSS JOIN flavors f
+WHERE b.name = 'Centro'
+ORDER BY f.name;
 
 
 -- ============================================
--- PASO 4: Grilla con salario base
+-- PASO 4: Grilla con costo/precio base estimado
 -- ============================================
-
--- Combinar dept × nivel mostrando el sueldo estimado
--- Descomenta las siguientes líneas:
-
--- SELECT
---     d.name         AS department,
---     l.name         AS level,
---     l.base_salary  AS base_salary
--- FROM departments  d
--- CROSS JOIN job_levels l
--- ORDER BY d.name, l.rank;
+-- Generar la grilla de sucursales y sabores, proyectando una columna de control de negocio
+SELECT
+    b.name  AS sucursal,
+    b.city  AS ciudad,
+    f.name  AS sabor
+FROM branches b
+CROSS JOIN flavors f
+ORDER BY b.name, f.name;

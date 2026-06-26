@@ -1,65 +1,45 @@
--- Semana 09: LEFT JOIN
--- Ejercicio 02 — Descomenta cada bloque en orden
-
 -- ============================================
+-- Semana 09: LEFT JOIN — Heladería
+-- Ejercicio 02 — SOLUCIÓN (Juan Pablo Castillo)
+-- ============================================
+
 -- PASO 1: LEFT JOIN básico
--- ============================================
-
--- Todos los departamentos, con o sin empleados
--- Descomenta las siguientes líneas:
-
--- SELECT
---     d.name       AS department,
---     e.first_name AS employee
--- FROM departments d
--- LEFT JOIN employees e ON e.department_id = d.id;
+-- Mostrar todos los sabores de la heladería, tengan o no un producto asignado actualmente
+SELECT
+    f.name  AS sabor_disponible,
+    p.name  AS helado_asociado
+FROM flavors f
+LEFT JOIN products p ON p.flavor_id = f.id;
 
 
--- ============================================
--- PASO 2: Detectar departamentos huérfanos
--- ============================================
-
--- Solo departamentos sin ningún empleado
--- Descomenta las siguientes líneas:
-
--- SELECT
---     d.name AS department_sin_empleados
--- FROM departments d
--- LEFT JOIN employees e ON e.department_id = d.id
--- WHERE e.id IS NULL;
+-- PASO 2: Detectar elementos huérfanos
+-- Encontrar sabores creados en la base de datos que NO se están usando en ningún helado
+SELECT
+    f.name  AS sabor_sin_utilizar
+FROM flavors f
+LEFT JOIN products p ON p.flavor_id = f.id
+WHERE p.id IS NULL;
 
 
--- ============================================
--- PASO 3: Contar empleados por departamento
--- ============================================
-
--- Incluye depts vacíos con COUNT(e.id) = 0
--- Descomenta las siguientes líneas:
-
--- SELECT
---     d.name       AS department,
---     COUNT(e.id)  AS total_employees
--- FROM departments d
--- LEFT JOIN employees e ON e.department_id = d.id
--- GROUP BY d.name
--- ORDER BY total_employees DESC;
+-- PASO 3: Contar productos por cada sabor
+-- Agrupar por sabor para saber cuántos helados lo usan (debe mostrar 0 si el sabor está vacío)
+SELECT
+    f.name      AS sabor,
+    COUNT(p.id) AS total_productos
+FROM flavors f
+LEFT JOIN products p ON p.flavor_id = f.id
+GROUP BY f.name
+ORDER BY total_productos DESC;
 
 
--- ============================================
 -- PASO 4: LEFT JOIN tres tablas + filtro en ON
--- ============================================
-
--- Departamentos con ubicación y empleados ACTIVOS
--- El filtro va en ON, no en WHERE, para conservar los vacíos
--- Descomenta las siguientes líneas:
-
--- SELECT
---     d.name       AS department,
---     l.name       AS location,
---     COUNT(e.id)  AS active_employees
--- FROM departments  d
--- LEFT JOIN locations  l ON d.location_id   = l.id
--- LEFT JOIN employees  e ON e.department_id  = d.id
---                       AND e.is_active      = 1
--- GROUP BY d.name, l.name
--- ORDER BY active_employees DESC;
+-- Mostrar todas las sucursales y contar cuántas ventas grandes (cantidad >= 5) han tenido
+SELECT
+    b.name      AS sucursal,
+    b.city      AS ciudad,
+    COUNT(s.id) AS ventas_mayores
+FROM branches b
+LEFT JOIN sales s ON s.branch_id = b.id AND s.quantity >= 5
+LEFT JOIN products p ON s.product_id = p.id
+GROUP BY b.name, b.city
+ORDER BY ventas_mayores DESC;

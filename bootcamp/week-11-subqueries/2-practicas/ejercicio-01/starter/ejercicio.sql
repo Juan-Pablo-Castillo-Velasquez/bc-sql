@@ -1,67 +1,56 @@
+-- ============================================
 -- Semana 11: Subqueries
--- Ejercicio 01 — Descomenta cada bloque en orden
+-- Ejercicio 01 — SOLUCIÓN (Juan Pablo Castillo)
+-- ============================================
 
 -- ============================================
 -- PASO 1: Subquery escalar en WHERE
 -- ============================================
-
--- Empleados con sueldo sobre el promedio general
--- Descomenta las siguientes líneas:
-
--- SELECT
---     first_name,
---     salary
--- FROM employees
--- WHERE salary > (SELECT AVG(salary) FROM employees)
--- ORDER BY salary DESC;
+-- Empleados cuyo sueldo se encuentra por encima del promedio general de la empresa
+SELECT
+    e.first_name,
+    e.salary
+FROM employees e
+WHERE e.salary > (SELECT AVG(emp_inner.salary) FROM employees emp_inner)
+ORDER BY e.salary DESC;
 
 
 -- ============================================
 -- PASO 2: Subquery escalar en SELECT
 -- ============================================
-
--- Cada fila muestra el promedio global como columna extra
--- Descomenta las siguientes líneas:
-
--- SELECT
---     first_name,
---     salary,
---     ROUND((SELECT AVG(salary) FROM employees), 2) AS company_avg
--- FROM employees
--- ORDER BY salary DESC;
+-- Cada fila muestra los datos del empleado junto al promedio global de la compañía
+SELECT
+    e.first_name,
+    e.salary,
+    ROUND((SELECT AVG(emp_inner.salary) FROM employees emp_inner), 2) AS company_avg
+FROM employees e
+ORDER BY e.salary DESC;
 
 
 -- ============================================
 -- PASO 3: Filtrar con IN
 -- ============================================
-
--- Empleados en departamentos activos
--- Descomenta las siguientes líneas:
-
--- SELECT
---     first_name,
---     department_id
--- FROM employees
--- WHERE department_id IN (
---     SELECT id
---     FROM departments
---     WHERE is_active = 1
--- );
+-- Obtener los empleados asignados a departamentos que se encuentren en estado activo (is_active = 1)
+SELECT
+    e.first_name,
+    e.department_id
+FROM employees e
+WHERE e.department_id IN (
+    SELECT d.id
+    FROM departments d
+    WHERE d.is_active = 1
+);
 
 
 -- ============================================
 -- PASO 4: NOT IN con protección NULL
 -- ============================================
-
--- Empleados en departamentos con presupuesto <= 100 000
--- Proteger la subquery contra NULLs con IS NOT NULL
--- Descomenta las siguientes líneas:
-
--- SELECT first_name
--- FROM employees
--- WHERE department_id NOT IN (
---     SELECT id
---     FROM departments
---     WHERE budget > 100000
---       AND id IS NOT NULL
--- );
+-- Empleados en departamentos cuyo presupuesto NO es mayor a 100,000, protegiendo contra valores NULL
+SELECT e.first_name
+FROM employees e
+WHERE e.department_id NOT IN (
+    SELECT d.id
+    FROM departments d
+    WHERE d.budget > 100000
+      AND d.id IS NOT NULL
+);

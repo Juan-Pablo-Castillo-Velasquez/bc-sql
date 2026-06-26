@@ -1,53 +1,82 @@
 -- ============================================
--- PROYECTO SEMANAL: Funciones de Agregación
--- Semana 06 — COUNT, SUM, AVG, GROUP BY, HAVING
+-- Semana 06: Proyecto — Reporte de Heladería
+-- Funciones de Agregación aplicadas a negocio
 -- ============================================
-
--- NOTA: Usa el esquema de tu Semana 03. Adapta nombres al dominio.
-
--- ============================================
--- REPORTE 1: Totales globales
--- ============================================
--- TODO: Cuenta todos los registros y calcula suma/promedio
---       de la columna numérica más relevante de tu dominio
--- SELECT
---     COUNT(*)     AS total_registros,
---     SUM(col_num) AS suma_total,
---     AVG(col_num) AS promedio
--- FROM tu_tabla;
-
+-- Ejecuta primero los setups de ejercicio-01 y ejercicio-02
 
 -- ============================================
--- REPORTE 2: Extremos
+-- REPORTE 1: Resumen General de Ventas
 -- ============================================
--- TODO: Obtén el valor mínimo y máximo de la columna numérica
--- SELECT
---     MIN(col_num) AS minimo,
---     MAX(col_num) AS maximo
--- FROM tu_tabla;
+SELECT
+    COUNT(DISTINCT s.id) AS total_transacciones,
+    COUNT(sd.id) AS items_vendidos,
+    SUM(sd.subtotal) AS ingresos_totales,
+    ROUND(AVG(sd.subtotal), 2) AS ticket_promedio,
+    MIN(sd.subtotal) AS venta_minima,
+    MAX(sd.subtotal) AS venta_maxima
+FROM   sales_details sd
+JOIN   sales s ON sd.sale_id = s.id;
 
 
 -- ============================================
--- REPORTE 3: Subtotales por categoría (GROUP BY)
+-- REPORTE 2: Desempeño por Sucursal
 -- ============================================
--- TODO: Agrupa por la columna de categoría/tipo principal de tu dominio
---       y calcula COUNT + AVG o SUM para cada grupo
--- SELECT
---     columna_categoria,
---     COUNT(*)     AS total,
---     AVG(col_num) AS promedio
--- FROM   tu_tabla
--- GROUP BY columna_categoria
--- ORDER BY total DESC;
+SELECT
+    b.name AS sucursal,
+    b.city AS ciudad,
+    COUNT(DISTINCT s.id) AS transacciones,
+    COUNT(sd.id) AS items_vendidos,
+    SUM(sd.subtotal) AS ingresos,
+    ROUND(AVG(sd.subtotal), 2) AS promedio_por_item
+FROM   sales_details sd
+JOIN   sales s ON sd.sale_id = s.id
+JOIN   branches b ON s.branch_id = b.id
+GROUP BY s.branch_id, b.name, b.city
+ORDER BY ingresos DESC;
 
 
 -- ============================================
--- REPORTE 4: Filtro de grupos (HAVING)
+-- REPORTE 3: Ranking de Sabores por Popularidad
 -- ============================================
--- TODO: Muestra solo los grupos que superen un umbral de negocio
--- SELECT
---     columna_categoria,
---     COUNT(*) AS total
--- FROM   tu_tabla
--- GROUP BY columna_categoria
--- HAVING COUNT(*) > umbral;
+SELECT
+    f.name AS sabor,
+    COUNT(sd.id) AS veces_vendido,
+    SUM(sd.quantity) AS unidades_totales,
+    SUM(sd.subtotal) AS ingresos_generado,
+    ROUND(AVG(sd.subtotal), 2) AS ingreso_promedio_venta
+FROM   sales_details sd
+JOIN   products p ON sd.product_id = p.id
+JOIN   flavors f ON p.flavor_id = f.id
+GROUP BY f.id, f.name
+ORDER BY ingresos_generado DESC;
+
+
+-- ============================================
+-- REPORTE 4: Análisis por Tamaño de Producto
+-- ============================================
+SELECT
+    p.size AS tamaño,
+    COUNT(sd.id) AS veces_vendido,
+    SUM(sd.quantity) AS unidades_totales,
+    ROUND(AVG(sd.subtotal), 2) AS precio_promedio_venta,
+    SUM(sd.subtotal) AS ingresos_totales
+FROM   sales_details sd
+JOIN   products p ON sd.product_id = p.id
+GROUP BY p.size
+ORDER BY ingresos_totales DESC;
+
+
+-- ============================================
+-- REPORTE 5: Sabores Estrella
+-- HAVING: Solo sabores con ingresos > 50.000
+-- ============================================
+SELECT
+    f.name AS sabor,
+    COUNT(sd.id) AS transacciones,
+    SUM(sd.subtotal) AS ingresos_sabor
+FROM   sales_details sd
+JOIN   products p ON sd.product_id = p.id
+JOIN   flavors f ON p.flavor_id = f.id
+GROUP BY f.id, f.name
+HAVING SUM(sd.subtotal) > 50000
+ORDER BY ingresos_sabor DESC;

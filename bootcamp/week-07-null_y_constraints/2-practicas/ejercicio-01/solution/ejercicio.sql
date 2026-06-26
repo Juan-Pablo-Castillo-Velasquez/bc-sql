@@ -1,27 +1,30 @@
 -- ============================================
--- Semana 07: NULL — Ejercicio 01 — SOLUCIÓN
+-- Semana 07: NULL — Ejercicio 01
+-- Juan Pablo Castillo Velásquez | 3228970A
+-- Dominio: Heladería
 -- ============================================
+PRAGMA foreign_keys = ON;
 
--- PASO 1
-SELECT id, first_name, email
-FROM   employees
-WHERE  email IS NULL;
+-- PASO 1: Sucursales sin teléfono registrado
+SELECT id, name, city
+FROM   branches
+WHERE  phone IS NULL;
 
--- PASO 2
-SELECT id, first_name, email
-FROM   employees
-WHERE  email IS NOT NULL;
+-- PASO 2: Sucursales que sí tienen teléfono
+SELECT id, name, city, phone
+FROM   branches
+WHERE  phone IS NOT NULL;
 
--- PASO 3
+-- PASO 3: COALESCE — si manager es NULL mostrar 'Sin asignar'
 SELECT
-    first_name,
-    bonus,
-    COALESCE(bonus, 0) AS bonus_efectivo
-FROM employees;
+    name,
+    manager,
+    COALESCE(manager, 'Sin asignar') AS manager_efectivo
+FROM branches;
 
--- PASO 4
+-- PASO 4: COUNT(*) vs COUNT(columna)
 SELECT
-    COUNT(*)      AS total_empleados,
-    COUNT(email)  AS con_email,
-    COUNT(bonus)  AS con_bonus
-FROM employees;
+    COUNT(*)        AS total_sucursales,
+    COUNT(phone)    AS con_telefono,
+    COUNT(manager)  AS con_manager
+FROM branches;
