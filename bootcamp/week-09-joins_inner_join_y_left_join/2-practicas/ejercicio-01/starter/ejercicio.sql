@@ -1,68 +1,49 @@
--- Semana 09: INNER JOIN
--- Ejercicio 01 — Descomenta cada bloque en orden
-
 -- ============================================
+-- Semana 09: INNER JOIN — Heladería
+-- Ejercicio 01 — SOLUCIÓN (Juan Pablo Castillo)
+-- ============================================
+
 -- PASO 1: INNER JOIN básico
--- ============================================
-
--- Empleados con el nombre de su departamento
--- Descomenta las siguientes líneas:
-
--- SELECT
---     e.first_name,
---     e.last_name,
---     d.name AS department
--- FROM employees e
--- INNER JOIN departments d ON e.department_id = d.id;
+-- Obtener los productos (helados) junto con el nombre de su sabor base
+SELECT
+    p.id    AS producto_id,
+    p.name  AS helado_nombre,
+    f.name  AS sabor_base
+FROM products p
+INNER JOIN flavors f ON p.flavor_id = f.id;
 
 
--- ============================================
 -- PASO 2: Columnas de ambas tablas + ORDER BY
--- ============================================
-
--- Empleados con sueldo y presupuesto del departamento
--- Descomenta las siguientes líneas:
-
--- SELECT
---     e.first_name,
---     e.salary,
---     d.name   AS department,
---     d.budget
--- FROM employees e
--- INNER JOIN departments d ON e.department_id = d.id
--- ORDER BY e.salary DESC;
+-- Listar las ventas con el nombre del producto vendido y su precio ordenado de mayor cantidad a menor
+SELECT
+    s.id        AS venta_id,
+    s.quantity  AS cantidad,
+    p.name      AS producto_helado,
+    p.price     AS precio_unitario
+FROM sales s
+INNER JOIN products p ON s.product_id = p.id
+ORDER BY s.quantity DESC;
 
 
--- ============================================
 -- PASO 3: INNER JOIN + filtro WHERE
--- ============================================
-
--- Solo empleados activos del departamento Engineering
--- Descomenta las siguientes líneas:
-
--- SELECT
---     e.first_name,
---     e.last_name,
---     e.level
--- FROM employees e
--- INNER JOIN departments d ON e.department_id = d.id
--- WHERE d.name      = 'Engineering'
---   AND e.is_active = 1;
+-- Filtrar solo las ventas de la sucursal llamada 'Centro'
+SELECT
+    s.id        AS venta_id,
+    s.quantity  AS cantidad_vendida,
+    b.name      AS sucursal
+FROM sales s
+INNER JOIN branches b ON s.branch_id = b.id
+WHERE b.name = 'Centro';
 
 
--- ============================================
 -- PASO 4: JOIN de tres tablas
--- ============================================
-
--- Empleados con su departamento y ubicación
--- Descomenta las siguientes líneas:
-
--- SELECT
---     e.first_name,
---     d.name  AS department,
---     l.name  AS location,
---     l.country
--- FROM employees e
--- INNER JOIN departments d ON e.department_id = d.id
--- INNER JOIN locations   l ON d.location_id   = l.id
--- ORDER BY l.country, d.name;
+-- Historial completo de ventas: Qué helado se vendió, en qué sucursal y de qué ciudad
+SELECT
+    s.id    AS venta_id,
+    p.name  AS helado,
+    b.name  AS sucursal,
+    b.city  AS ciudad
+FROM sales s
+INNER JOIN products p ON s.product_id = p.id
+INNER JOIN branches b ON s.branch_id = b.id
+ORDER BY b.city, b.name;
